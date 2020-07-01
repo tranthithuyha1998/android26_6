@@ -28,42 +28,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnreset"
-        android:layout_width="108dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="116dp"
-        android:layout_marginEnd="36dp"
-        android:layout_marginRight="36dp"
-        android:background="#FF0027"
-        android:gravity="center"
-        android:text="@string/reset"
-        android:textAllCaps="true"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.984"
-        app:layout_constraintStart_toEndOf="@+id/btnstartstop"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/txtspeed"
-        android:layout_width="102dp"
-        android:layout_height="36dp"
+        android:layout_width="91dp"
+        android:layout_height="37dp"
         android:layout_marginStart="1dp"
         android:layout_marginLeft="1dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="36dp"
         android:layout_marginRight="36dp"
         android:gravity="left"
         android:text="SPEED:"
-        android:textColor="#F1BF29"
-        android:textSize="18sp"
+        android:textColor="#0C0C0C"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.935"
+        app:layout_constraintHorizontal_bias="0.874"
         app:layout_constraintStart_toEndOf="@+id/slowfast"
-        app:layout_constraintTop_toBottomOf="@+id/btnreset" />
+        app:layout_constraintTop_toBottomOf="@+id/btnconnect" />
 
     <Button
         android:id="@+id/btnpicture"
@@ -86,15 +68,17 @@
         android:layout_height="80dp"
         android:layout_marginStart="1dp"
         android:layout_marginLeft="1dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="28dp"
+        android:autoText="false"
+        android:background="#00000000"
         android:gravity="left"
         android:text="@string/status"
         android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
+        android:textColor="#000000"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.729"
+        app:layout_constraintHorizontal_bias="0.867"
         app:layout_constraintStart_toEndOf="@+id/btnpicture"
         app:layout_constraintTop_toBottomOf="@+id/txtspeed" />
 
@@ -133,6 +117,7 @@
         android:text="@string/togglebutton"
         android:textOff="@string/slow"
         android:textOn="@string/fast"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnstartstop" />
@@ -147,7 +132,7 @@
         android:background="#33971F"
         android:textOff="@string/stop"
         android:textOn="@string/run"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -166,5 +151,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/hcmutlogo" />
+
+    <ToggleButton
+        android:id="@+id/btnconnect"
+        android:layout_width="108dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="116dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginRight="36dp"
+        android:background="#E40D0D"
+        android:text="ToggleButton"
+        android:textColor="#131313"
+        android:textOff="DISCONNECT"
+        android:textOn="CONNECT"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

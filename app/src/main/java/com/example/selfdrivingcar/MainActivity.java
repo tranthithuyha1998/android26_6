@@ -40,9 +40,9 @@ import io.socket.emitter.Emitter;
 public class MainActivity extends AppCompatActivity {
 
     TextView viewSpeed, viewStatus, viewTime;
-    Button  btnReset, btnPic;
+    Button  btnPic;
     ImageView viewImg;
-    ToggleButton btnStartStop, setSpeed;
+    ToggleButton btnStartStop, setSpeed,btnConnect;
    String url_heroku = "https://ha-drivingcar.herokuapp.com/";
 
     private Socket mSocket;
@@ -81,8 +81,10 @@ public class MainActivity extends AppCompatActivity {
         /*END NOTIFY */
 
         /*--- setVisibility ---*/
-        viewStatus.setText("Status: ______");
-        viewStatus.setTextColor(Color.rgb(255,255,255));
+        viewStatus.setText("STATUS: ______");
+        viewStatus.setTextColor(Color.rgb(0,0,0));
+        viewStatus.setBackgroundColor(0x00E40D0D);
+        btnStartStop.setBackgroundColor(Color.rgb(200,0,0));
         viewImg.setVisibility(View.INVISIBLE);
         viewTime.setVisibility(View.INVISIBLE);
 
@@ -103,55 +105,77 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                Toast.makeText(MainActivity.this, "Start Tracking !", Toast.LENGTH_SHORT).show();
                 Context context=view.getContext();
-                if (isConnectedToNetwork(context))
+                if (onetime){
+                    viewStatus.setText("STATUS: Disconnect");
+                    Toast.makeText(MainActivity.this, "Disconnected", Toast.LENGTH_SHORT).show();
+                }
+                else if (isConnectedToNetwork(context))
                 {
                     Log.d("test", "startClick");
 
-                    Connect2Server();
                     if(btnStartStop.isChecked()) {
+                        btnStartStop.setBackgroundColor(Color.rgb(0,200,0));
                         mSocket.emit("from-android", "start");
-                        viewStatus.setText("Status: Start");
-                        Toast.makeText(MainActivity.this, "START", Toast.LENGTH_SHORT).show();
+                        viewStatus.setText("STATUS: Run");
+                        Toast.makeText(MainActivity.this, "Running", Toast.LENGTH_SHORT).show();
+                        viewStatus.setBackgroundColor(0x00E40D0D);
                     }
                         else{
+                        btnStartStop.setBackgroundColor(Color.rgb(200,0,0));
                         mSocket.emit("from-android","stop");
-                        Toast.makeText(MainActivity.this, "STOP", Toast.LENGTH_SHORT).show();
-                        viewStatus.setBackgroundColor(Color.rgb(0,200,0));
+                        viewStatus.setText("STATUS: Stop");
+                        Toast.makeText(MainActivity.this, "Stopping", Toast.LENGTH_SHORT).show();
+                        viewStatus.setBackgroundColor(0x00E40D0D);
                         Log.d("test", "btnStart");
                     }
                 }
                 else
                 {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
-                    viewStatus.setText("Status: Not connect !");
-                    viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
+                    viewStatus.setText("STATUS: Not connect !");
+                    viewStatus.setBackgroundColor(0x00E40D0D);
                 }
             }
         });
 
-        /*----WHEN PUSH BUTTON RESET ----*/
+        /*----WHEN PUSH BUTTON CONNECT/DISCONNECT ----*/
 
-        btnReset.setOnClickListener(new View.OnClickListener() {
+        btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Context context=view.getContext();
                 if (isConnectedToNetwork(context)) {
-                    setSpeed.setChecked(false);
-                    mSocket.emit("from-android", "speed_slow");
-                    mSocket.emit("from-android", "reset");
-                    viewStatus.setText("Status: Reset");
-                    viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
-                    viewImg.setVisibility(View.INVISIBLE);
-                    viewTime.setVisibility(View.INVISIBLE);
-                    mSocket.disconnect();
-                    onetime=true;
+                    if(btnConnect.isChecked()) {
+                        btnConnect.setBackgroundColor(Color.rgb(0, 200, 0));
+                        Connect2Server();
+                        setSpeed.setChecked(false);
+                        mSocket.emit("from-android", "connect");
+                        mSocket.emit("from-android", "speed_slow");
+                        viewStatus.setText("STATUS: Connect  ");
+                        Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT).show();
+                        viewStatus.setBackgroundColor(0x00E40D0D);
+                    }
+                    else{
+                        btnConnect.setBackgroundColor(Color.rgb(200, 0, 0));
+                        mSocket.emit("from-android", "disconnect");
+                        mSocket.disconnect();
+                        viewStatus.setText("STATUS: Disconnect  ");
+                        viewSpeed.setText("SPEED:  ");
+                        viewStatus.setBackgroundColor(0x00E40D0D);
+                        Toast.makeText(MainActivity.this, "Disconnected", Toast.LENGTH_SHORT).show();
+                        onetime=true;
+                        viewImg.setVisibility(View.INVISIBLE);
+                        viewTime.setVisibility(View.INVISIBLE);
+                    }
+
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
-                    viewStatus.setText("Status: Not connect !");
-                    viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
+                    viewStatus.setText("STATUS: Not connect !");
+                    viewStatus.setBackgroundColor(0x00E40D0D);
                 }
                 }
+
         });
 
 
@@ -159,21 +183,25 @@ public class MainActivity extends AppCompatActivity {
         setSpeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Context context=view.getContext();
-                if (isConnectedToNetwork(context)) {
-                    if(setSpeed.isChecked()) {
-                        mSocket.emit("from-android", "speed_slow");
-                        Toast.makeText(MainActivity.this, "SPEED IS SLOW", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+                        Context context=view.getContext();
+                if (onetime){
+                    viewStatus.setText("STATUS: Disconnect");
+                    Toast.makeText(MainActivity.this, "Disconnected", Toast.LENGTH_SHORT).show();
+                }
+                else if (isConnectedToNetwork(context)) {
+                  if(setSpeed.isChecked()) {
                         mSocket.emit("from-android", "speed_fast");
                         Toast.makeText(MainActivity.this, "SPEED IS FAST", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        mSocket.emit("from-android", "speed_slow");
+                        Toast.makeText(MainActivity.this, "SPEED IS SLOW", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
-                    viewStatus.setText("Status: Not connect !");
-                    viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
+                    viewStatus.setText("STATUS: Not connect !");
+                    viewStatus.setBackgroundColor(0x00E40D0D);
                 }
             }
         });
@@ -185,14 +213,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Context context= view.getContext();
-                if (isConnectedToNetwork((context))){
+                if (onetime){
+                    viewStatus.setText("STATUS: Disconnect");
+                    Toast.makeText(MainActivity.this, "Disconnected", Toast.LENGTH_SHORT).show();
+                }
+                else if (isConnectedToNetwork((context))){
+
                     mSocket.emit("from-android", "getpic");
                     mSocket.on("send-img", imgData);
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
-                    viewStatus.setText("Status: Not connect !");
-                    viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
+                    viewStatus.setText("STATUS: Not connect !");
+                    viewStatus.setBackgroundColor(0x00E40D0D);
                 }
             }
         });
@@ -201,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
     private void AnhXa()
     {
         btnStartStop = findViewById(R.id.btnstartstop);
-        btnReset = findViewById(R.id.btnreset);
+        btnConnect = findViewById(R.id.btnconnect);
         viewSpeed = findViewById(R.id.txtspeed);
         btnPic = findViewById(R.id.btnpicture);
         viewStatus = findViewById(R.id.txtviewstatus);
@@ -266,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
 
                         switch (statusCar){
                             case "Lost":
-                                viewStatus.setText("Status: Lost !");
+                                viewStatus.setText("STATUS: Lost !");
                                 viewStatus.setBackgroundColor(Color.rgb(241, 191, 41));
                                 viewTime.setText(captime);
                                 String encodedString=img_text.substring(img_text.indexOf(",")+1,img_text.length());
@@ -280,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                                 showNotificationLost();
                                 break;
                             case "Run":
-                                viewStatus.setText("Status: Running !");
+                                viewStatus.setText("STATUS: Running !");
                                 viewStatus.setBackgroundColor(Color.rgb(0, 200, 0));
 //                                viewImg.setVisibility(View.INVISIBLE);
 //                                viewTime.setVisibility(View.INVISIBLE);
@@ -289,14 +322,14 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d("ReS", "value: "+Integer.toString(ReStop));
                                 // vat can
                                 if(ReStop==1){
-                                    viewStatus.setText("Have Obstacle!");
+                                    viewStatus.setText("STATUS: Have Obstacle!");
                                 }
                                 // bien bao
                                 else if(ReStop==2){
-                                    viewStatus.setText("Signal Stop!");
+                                    viewStatus.setText("STATUS: Signal Stop!");
                                 }
                                 else{
-                                    viewStatus.setText("Status: Stopping !");
+                                    viewStatus.setText("STATUS: Stopping !");
                                 }
                                 // viewStatus.setText("Status: Stopping !");
                                 viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
